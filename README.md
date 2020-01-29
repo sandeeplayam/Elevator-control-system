@@ -1,2 +1,2 @@
 # elevator_concurrency
-Sysc 3303 project collaborators repo
+Sysc 3303 project collaborators repos
