@@ -1,10 +1,9 @@
 /**
  * 
  */
-package elevator_concurrency;
 
 /**
- * @author danie
+ * @author Group #2
  *
  */
 public class ElevatorSubsystem extends Thread {
@@ -17,7 +16,7 @@ public class ElevatorSubsystem extends Thread {
 
 	public void run() {
 		for (;;)
-			this.scheduler.excuteRequest("Elevator answered");
+			this.scheduler.excuteRequest("Elevator responded to the Floor request\n");
 	}
 
 }
