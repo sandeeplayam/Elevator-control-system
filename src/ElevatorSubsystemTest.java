@@ -13,13 +13,13 @@ import static org.junit.Assert.assertNotEquals;
 
 import org.junit.jupiter.api.Test;
 
-class ElevSubSysTest {
+class ElevatorSubsystemTest {
 
-	private ElevatorSubSystem elevator;
+	private ElevatorSubsystem elevator;
 	Scheduler sched = new Scheduler("name");
 
-	public ElevSubSysTest() {
-		elevator = new ElevatorSubSystem("One", sched);
+	public ElevatorSubsystemTest() {
+		elevator = new ElevatorSubsystem("One", sched);
 	}
 
 	@Test
