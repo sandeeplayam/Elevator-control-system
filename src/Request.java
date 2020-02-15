@@ -5,8 +5,7 @@
  */
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class Request {
@@ -49,8 +48,8 @@ public class Request {
 		File file = new File("./elevator.txt");
 		Scanner scan = new Scanner(file);
 
-		List<Request> listOfRequests = new ArrayList<Request>();
-
+		HashMap<Integer, Request> requestListMap = new HashMap<Integer, Request>();
+		int i = 0;
 		while (scan.hasNextLine()) {
 
 			String line = scan.nextLine();
@@ -71,7 +70,8 @@ public class Request {
 
 					int dNumber = Integer.parseInt(info[3]);
 					Request r = new Request(time, fNumber, dir, dNumber);
-					listOfRequests.add(r);
+					requestListMap.put(i, r);
+					i++;
 
 				} else {
 					System.out.print("Did not receive the correct inputs, cannot process request. \n");
@@ -82,12 +82,12 @@ public class Request {
 			}
 		}
 		scan.close();
-//		System.out.println(listOfRequests);
 		Scheduler scheduler = new Scheduler("scheduler");
-		FloorSubsystem floor = new FloorSubsystem("Floor ", listOfRequests, scheduler);
+		FloorSubsystem floor = new FloorSubsystem("Floor ", requestListMap, scheduler);
 		ElevatorSubsystem elevator = new ElevatorSubsystem("Elevator ", scheduler);
 		scheduler.start();
 		floor.start();
 		elevator.start();
+
 	}
 }

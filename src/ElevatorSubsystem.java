@@ -1,3 +1,5 @@
+import java.util.Map;
+
 /**
  * 
  */
@@ -15,8 +17,10 @@ public class ElevatorSubsystem extends Thread {
 	}
 
 	public void run() {
-		for (;;)
-			this.scheduler.excuteRequest("Elevator responded to the Floor request\n");
+		for (;;) {
+			Map.Entry<Integer, Request> entry = this.scheduler.excuteRequest();
+			System.out.println(Thread.currentThread().getName() + ": " + entry.getValue());
+		}
 	}
 
 }
