@@ -10,11 +10,11 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-class RqstTrainTest {
+class RequestTrainTest {
 
 	private RequestTrain reqT;
 
-	public RqstTrainTest() {
+	public RequestTrainTest() {
 
 		reqT = new RequestTrain();
 
