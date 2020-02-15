@@ -20,20 +20,13 @@ public class FloorSubsystem extends Thread {
 		return requestList.isEmpty();
 	}
 
-	public void run() {
+	synchronized public void run() {
+
 		for (;;) {
 			// check if there is more requests coming in
-			try {
-				Thread.sleep(2000);
-			} catch (Exception e) {
-				System.err.println(e);
-
-			}
 			if (isRequest()) {
-				this.scheduler.setCurrentState(RequestState.SLEEP);
 				this.scheduler.waitForRequest();
 			} else {
-
 				for (Map.Entry<Integer, Request> entry : requestList.entrySet()) {
 					this.scheduler.scheduleRequest(entry.getKey(), entry.getValue());
 				}

@@ -82,7 +82,7 @@ public class Request {
 			}
 		}
 		scan.close();
-		Scheduler scheduler = new Scheduler("scheduler");
+		Scheduler scheduler = new Scheduler("Scheduler");
 		FloorSubsystem floor = new FloorSubsystem("Floor ", requestListMap, scheduler);
 		ElevatorSubsystem elevator = new ElevatorSubsystem("Elevator ", scheduler);
 		scheduler.start();
