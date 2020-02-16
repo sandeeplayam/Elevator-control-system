@@ -3,7 +3,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 //import org.junit.runner.Runwith;
 @RunWith(Suite.class)
-@SuiteClasses({requestTest.class,RqstTrainTest.class,ElevSubSysTest.class})
+@SuiteClasses({requestTest.class,RqstTrainTest.class,ElevSubSysTest.class,SchedulerTest.class})
 public class TestAll {
 
 }
