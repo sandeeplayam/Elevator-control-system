@@ -31,7 +31,7 @@ public class Scheduler extends Thread {
 		}
 		String fThread = Thread.currentThread().getName();
 		int f = request.getDestFloor();
-		System.out.println(fThread + " sending a request to floor " + f);
+		System.out.println(fThread + " sending a request with details of---> " + request);
 		try {
 			Thread.sleep(2000);
 		} catch (Exception e) {
