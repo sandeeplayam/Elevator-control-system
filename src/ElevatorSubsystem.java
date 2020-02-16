@@ -1,9 +1,9 @@
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Elevator sub system class for Sysc 3303 Iteration 1 group 2
@@ -13,9 +13,9 @@ import java.util.Map;
  */
 public class ElevatorSubsystem extends Thread {
 
-	private static int preDelay = 2;
-	private static int postDelay = 3;
-	static private int timeMotor = 3;
+	private static int preDelay = 2000;
+	private static int postDelay = 3000;
+	static private int timeMotor = 3000;
 	private ArrayList<Boolean> listOfButtons;
 	private ArrayList<Boolean> listOfLamps;
 	private int currFloor;
@@ -46,34 +46,25 @@ public class ElevatorSubsystem extends Thread {
 		Collections.fill(listOfLamps, Boolean.FALSE); // filling the list with false boolean values
 
 		requestList = new HashMap<Integer, Request>();
-
-		System.out.println(
-				"Elevator " + getEleName() + " ready, waiting for requests from the Scheduler in an idle state.");
 	}
 
 	public void run() {
 		for (;;) {
 
 			Map.Entry<Integer, Request> entry = this.scheduler.executeRequest();
-			try {
-				Thread.sleep(2000);
-			} catch (Exception e) {
-				System.err.println(e);
-
-			}
 			this.requestList.put(entry.getKey(), entry.getValue());
-			System.out.println(Thread.currentThread().getName() + ": " + entry.getValue());
-
-			System.out.println(requestList);
+	
 			if (!requestList.isEmpty()) {
 				elevatorState(entry);
 
 			} else {
-				System.out.println("Elevator 1 ready, waiting for requests from the Scheduler in an idle state.\n");
+				System.out.println(getEleName() + "ready, waiting for requests from the Scheduler in an idle state.");
 			}
-			System.out.println(Thread.currentThread().getName() + ": " + entry.getValue());
-			System.out.println("-------------------");
+			
+			System.out.println(getEleName() + ": " + entry.getValue());
+			System.out.println("----------------------------------------------------------------");
 			this.scheduler.runCompleted();
+
 		}
 	}
 
@@ -97,7 +88,7 @@ public class ElevatorSubsystem extends Thread {
 
 					try {
 						doorOpen();
-						this.wait(ElevatorSubsystem.preDelay);
+						Thread.sleep(ElevatorSubsystem.preDelay);
 					} catch (InterruptedException e) {
 						System.out.println("There is an error in opening the door \n");
 						e.printStackTrace();
@@ -105,7 +96,7 @@ public class ElevatorSubsystem extends Thread {
 
 					try {
 						doorClose();
-						this.wait(ElevatorSubsystem.preDelay);
+						Thread.sleep(ElevatorSubsystem.preDelay);
 					} catch (InterruptedException e) {
 						System.out.println("There is an error in closing the door \n");
 						e.printStackTrace();
@@ -123,32 +114,34 @@ public class ElevatorSubsystem extends Thread {
 				int diff = this.currFloor - request.getStartFloor();
 				int directionIndex = 1;
 
-				if (diff < 0) {
-					directionIndex = -1;
+				if(diff > 0) {
+					directionIndex=-1;
 				}
 				diff = Math.abs(diff);
-
+				
 				if (this.currFloor == request.getStartFloor()) {
 					userDestination(request.getDestFloor());
-
+					
 					diff = this.currFloor - request.getDestFloor();
 
-					if (diff < 0) {
+					
+					if(diff > 0) {
 						directionIndex = -1;
 					}
-
+					
 					diff = Math.abs(diff);
-
+					
 				}
 
 				try {
 					triggerMotor();
 					triggerElevator(entry);
-					System.out.println(this.currFloor);
+					
 					while (diff != 0) {
-						this.wait(ElevatorSubsystem.timeMotor);
-
-						this.currFloor += directionIndex;
+						Thread.sleep(ElevatorSubsystem.timeMotor);
+						
+						
+						this.currFloor+=directionIndex;
 
 						diff--;
 					}
@@ -156,7 +149,7 @@ public class ElevatorSubsystem extends Thread {
 					System.out.println("Error running the motor \n");
 					e.printStackTrace();
 				}
-				System.out.println("");
+				
 				state = State.ARRIVING;
 				break;
 
@@ -167,7 +160,7 @@ public class ElevatorSubsystem extends Thread {
 
 				try {
 					doorOpen();
-					this.wait(ElevatorSubsystem.preDelay);
+					Thread.sleep(ElevatorSubsystem.preDelay);
 				} catch (InterruptedException e) {
 					System.out.println("There is an error in opening the door \n");
 					e.printStackTrace();
@@ -175,14 +168,14 @@ public class ElevatorSubsystem extends Thread {
 
 				try {
 					doorClose();
-					this.wait(ElevatorSubsystem.preDelay);
+					Thread.sleep(ElevatorSubsystem.preDelay);
 				} catch (InterruptedException e) {
 					System.out.println("There is an error in closing the door \n");
 					e.printStackTrace();
 				}
 
 				if (this.currFloor == request.getDestFloor()) {
-					requestList.remove(entry.getKey());
+					requestList.remove(entry.getKey()); 
 					finished = true;
 					state = State.IDLE;
 				} else {
@@ -202,18 +195,18 @@ public class ElevatorSubsystem extends Thread {
 
 		if (this.currFloor == request.getStartFloor()) {
 			if (request.getDirection() == "UP") {
-				System.out.println("Elevator " + getEleName() + " going up to floor " + request.getDestFloor()
+				System.out.println(getEleName() + " going up to floor " + request.getDestFloor()
 						+ " to drop off passenger.");
 			} else {
-				System.out.println("Elevator " + getEleName() + " going down to floor " + request.getDestFloor()
+				System.out.println(getEleName() + " going down to floor " + request.getDestFloor()
 						+ " to drop off passenger.");
 			}
 		} else if (this.currFloor != request.getStartFloor()) {
 			if (this.currFloor < request.getStartFloor()) {
-				System.out.println("Elevator " + getEleName() + " going up to floor " + request.getStartFloor()
+				System.out.println(getEleName() + " going up to floor " + request.getStartFloor()
 						+ " to pick up passenger.");
 			} else {
-				System.out.println("Elevator " + getEleName() + " going down to floor " + request.getStartFloor()
+				System.out.println(getEleName() + " going down to floor " + request.getStartFloor()
 						+ " to pick up passenger.");
 			}
 		}
@@ -236,9 +229,9 @@ public class ElevatorSubsystem extends Thread {
 		request = entry.getValue();
 
 		if (this.currFloor == request.getStartFloor()) {
-			System.out.println("Elevator " + getEleName() + " has arrived at floor " + request.getStartFloor() + ".");
+			System.out.println(getEleName() + " has arrived at floor " + request.getStartFloor() + ".");
 		} else if (this.currFloor == request.getDestFloor()) {
-			System.out.println("Elevator " + getEleName() + " has arrived at floor " + request.getDestFloor() + ".");
+			System.out.println(getEleName() + " has arrived at floor " + request.getDestFloor() + ".");
 		}
 	}
 
@@ -264,7 +257,7 @@ public class ElevatorSubsystem extends Thread {
 	}
 
 	public String getEleName() {
-		return eleName;
+		return this.eleName;
 	}
 
 	public int getCurrFloor() {
@@ -324,7 +317,7 @@ public class ElevatorSubsystem extends Thread {
 		getListOfLamps().set(floor, false);
 		try {
 			doorOpen();
-			this.wait(preDelay);
+			Thread.sleep(preDelay);
 
 		} catch (InterruptedException e) {
 			System.out.println("There is an error opening the door \n");
@@ -333,17 +326,25 @@ public class ElevatorSubsystem extends Thread {
 
 		try {
 			doorClose();
-			this.wait(postDelay);
+			Thread.sleep(postDelay);
 
 		} catch (InterruptedException e) {
 			System.out.println("There is an error closing the door \n");
 			e.printStackTrace();
 		}
 	}
-
-	public static void main(String[] args) {
-		Scheduler scheduler = new Scheduler("scheduler");
-		ElevatorSubsystem ele = new ElevatorSubsystem("1", scheduler);
+	
+	public Scheduler getScheduler() {
+		return this.scheduler;
+	}
+	
+	public boolean getMotorOn() {
+		return this.motorOn;
+	}
+	
+	public boolean getDoorClosed() {
+		return this.doorIsClosed;
 	}
 
+}
 }

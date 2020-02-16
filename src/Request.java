@@ -5,24 +5,25 @@
  */
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Scanner;
 
 public class Request {
 
-	private String time;
+	private LocalTime time;
 	private int startFloor;
 	private String direction;
 	private int destFloor;
 
-	public Request(String time, int startFloor, String direction, int destFloor) {
+	public Request(LocalTime time, int startFloor, String direction, int destFloor) {
 		this.time = time;
 		this.startFloor = startFloor;
 		this.direction = direction;
 		this.destFloor = destFloor;
 	}
 
-	public String getTime() {
+	public LocalTime getTime() {
 		return this.time;
 	}
 
@@ -60,7 +61,7 @@ public class Request {
 			if (error.strChecker() == true) {
 				if (info.length == 4) {
 
-					String time = info[0];
+					LocalTime time = LocalTime.now();
 
 					int fNumber = Integer.parseInt(info[1]);
 
@@ -84,7 +85,7 @@ public class Request {
 		scan.close();
 		Scheduler scheduler = new Scheduler("Scheduler");
 		FloorSubsystem floor = new FloorSubsystem("Floor ", requestListMap, scheduler);
-		ElevatorSubsystem elevator = new ElevatorSubsystem("Elevator ", scheduler);
+		ElevatorSubsystem elevator = new ElevatorSubsystem("Elevator 1", scheduler);
 		scheduler.start();
 		floor.start();
 		elevator.start();
