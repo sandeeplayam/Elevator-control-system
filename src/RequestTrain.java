@@ -79,13 +79,13 @@ public class RequestTrain {
 
 			Map.Entry<Integer, Request> req = it.next();
 
-			if (req.getValue().getDir().equals(dir)) {
+			if (req.getValue().getDirection().equals(dir)) {
 
-				if (up && req.getValue().getDestFLoor() > floor) {
+				if (up && req.getValue().getDestFloor() > floor) {
 
 					rqsts.put(req.getKey(), req.getValue());
 
-				} else if (!up && req.getValue().getDestFLoor() < floor) {
+				} else if (!up && req.getValue().getDestFloor() < floor) {
 
 					rqsts.put(req.getKey(), req.getValue());
 
