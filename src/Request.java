@@ -1,6 +1,7 @@
 
 /**
  * @author Group #2
+
  *
  */
 import java.io.File;
@@ -61,7 +62,8 @@ public class Request {
 			if (error.strChecker() == true) {
 				if (info.length == 4) {
 
-					LocalTime time = LocalTime.now();
+					LocalTime time = LocalTime.parse(info[0]);
+
 
 					int fNumber = Integer.parseInt(info[1]);
 

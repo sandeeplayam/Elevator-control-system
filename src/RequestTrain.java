@@ -3,20 +3,36 @@ import java.util.Iterator;
 import java.util.Map;
 //import java.sql.Time;
 //import java.time.LocalTime;
+import java.util.Map.Entry;
 
 public class RequestTrain {
 
 	private HashMap<Integer, Request> requests; // list of request objects
 
+	/**
+	 * Constructor for the RequestTrain object which holds a map of requests Creates
+	 * a new HashMap
+	 */
 	public RequestTrain() {
 
 		this.requests = new HashMap<Integer, Request>();
 	}
 
-	// add a request
+	public HashMap<Integer, Request> getAllRequests() {
+		return this.requests;
+	}
+
+	/**
+	 * Adds a request to existing map of requests
+	 * 
+	 * @param req is the Request to be added
+	 */
 	public void add(Request req) {
 
-		int key = 0;
+		// initialize key (request ID) as 1
+		int key = 1;
+		// if there are other requests in map, add count to 1 to get new ID
+		// else add key as 1 since it's the first request to be added
 		if (!requests.isEmpty()) {
 			key += requests.size();
 		}
@@ -24,32 +40,52 @@ public class RequestTrain {
 
 	}
 
-	// remove a request given a key
+	/**
+	 * Remove a request from the map given the unique key of the request
+	 * 
+	 * @param key is the ID of the request to be removed
+	 */
+
 	public void remove(int key) {
 
 		requests.remove(key);
 
 	}
 
-	// get a request given a key
+	/**
+	 * Get a request given the unique key of the request
+	 * 
+	 * @param key is the ID of the request to be retrieved
+	 * @return returns the Request
+	 */
+
 	public Request getRequest(int key) {
 
 		return requests.get(key);
 
 	}
 
-	// get request with earliest time
+	/**
+	 * Gets the request with the earliest time stamp
+	 * 
+	 * @return returns the earliest Request
+	 */
+
 	public Request getEarliest() {
 
 		Request earliest = null;
 		// LocalTime check = LocalTime.MAX; // initialize as max time
 
+		// check all the requests available
 		for (Request req : requests.values()) {
 
+			// for the first request
 			if (earliest == null) {
-				// set first request as earliest
+				// set earliest to first request
 				earliest = req;
+				// if earliest's time is after current request
 			} else if (earliest.getTime().isAfter(req.getTime())) {
+				// set earliest to current request
 
 				earliest = req;
 			}
@@ -60,14 +96,24 @@ public class RequestTrain {
 
 	}
 
-	// return requests that are above or below a given floor number
-	// floor is starting position and up is boolean for direction
+	/**
+	 * Gets a map of requests that have destinations that are above/below a given
+	 * floor number
+	 * 
+	 * @param floor is the starting position
+	 * @param up    is a boolean representing direction, true if checking requests
+	 *              above given floor and false for down
+	 * @return returns the HashMap of requests
+	 */
 	public HashMap<Integer, Request> getByFloor(int floor, boolean up) {
+
+		// Initialize HashMap and direction string
 
 		HashMap<Integer, Request> rqsts = new HashMap<Integer, Request>();
 
 		String dir = "";
 
+		// set string according to direction
 		if (up) {
 			dir = "Up";
 		} else {
@@ -76,18 +122,23 @@ public class RequestTrain {
 
 		Iterator<Map.Entry<Integer, Request>> it = requests.entrySet().iterator();
 
+		// while there are requests
 		while (it.hasNext()) {
 
 			Map.Entry<Integer, Request> req = it.next();
 
+			// if request has the needed direction
 			if (req.getValue().getDirection().equals(dir)) {
 
+				// if request is going up and above given floor
 				if (up && req.getValue().getDestFloor() > floor) {
-
+					// put in new HashMap
 					rqsts.put(req.getKey(), req.getValue());
 
+					// if request is going down and below given floor
 				} else if (!up && req.getValue().getDestFloor() < floor) {
 
+					// put in new HashMap
 					rqsts.put(req.getKey(), req.getValue());
 
 				}
@@ -99,6 +150,51 @@ public class RequestTrain {
 		return rqsts;
 
 	}
+	
+	/**Creates and returns a readable string representation of the map of requests
+	 * 
+	 * @return returns a string of requests
+	 */
+	public String toString() {
+
+		//initialize empty string
+		String reqs = "";
+		//create iterator
+		Iterator<Map.Entry<Integer, Request>> it = requests.entrySet().iterator();
+		while (it.hasNext()) {
+			
+			Map.Entry<Integer, Request> pair = (Entry<Integer, Request>) it.next();
+			//add appropriate data to string
+			reqs += "Key: " + pair.getKey();
+			reqs += " Time: " + pair.getValue().getTime();
+			reqs += " Start: " + pair.getValue().getStartFloor();
+			reqs += " Direction: " + pair.getValue().getDirection();
+			reqs += " Destination: " + pair.getValue().getDestFloor() + "\n";
+
+		}
+
+		return reqs;
+	}
+
+	/**
+	 * 
+	 * @return returns true if there are no requests and false otherwise
+	 */
+	public boolean isEmpty() {
+		return this.requests.isEmpty();
+	}
+
+	/**
+	 * Clears(empties) the HashMap of requests
+	 */
+	public void clearRequests() {
+
+		this.requests.clear();
+
+	}
+
+
+
 
 	public HashMap<Integer, Request> getAllRequests() {
 		return this.requests;
