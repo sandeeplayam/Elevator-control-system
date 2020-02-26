@@ -20,7 +20,13 @@ public class Scheduler extends Thread {
 		elevtorListMap = new HashMap<Integer, Request>();
 	}
 
-	// floor inserts a requests
+	/**
+	 * Schedule a request
+	 * 
+	 * @param key     , id or order of the request
+	 * @param request , the request to be processed
+	 */
+
 	synchronized public void scheduleRequest(Integer key, Request request) {
 		while (!currentState.compare(RequestState.FLOOR_REQUEST)) {
 			try {
@@ -30,8 +36,7 @@ public class Scheduler extends Thread {
 			}
 		}
 		String fThread = Thread.currentThread().getName();
-		int f = request.getDestFloor();
-		System.out.println(fThread + " sending a request to floor " + f);
+		System.out.println(fThread + " sending a request with details of---> " + request);
 		try {
 			Thread.sleep(2000);
 		} catch (Exception e) {
@@ -39,7 +44,8 @@ public class Scheduler extends Thread {
 
 		}
 		requestListMap.put(key, request);
-		System.out.println("Scheduler recieved a request to : " + request.getDestFloor());
+		int f = request.getDestFloor();
+		System.out.println("Scheduler recieved a request to : " + f);
 		this.addEleveterRequest(key, request);
 		currentState = RequestState.ELEVATOR_REQUEST;
 		notifyAll();
@@ -47,7 +53,7 @@ public class Scheduler extends Thread {
 
 	/**
 	 * 
-	 * @param request
+	 * @return an entry of the request handled
 	 */
 	synchronized public Map.Entry<Integer, Request> executeRequest() {
 		while (!currentState.compare(RequestState.ELEVATOR_REQUEST)) {
@@ -63,6 +69,10 @@ public class Scheduler extends Thread {
 		return new AbstractMap.SimpleEntry<Integer, Request>(currentKey, currentRequest);
 	}
 
+	/**
+	 * 
+	 * @return run the completed request / notified
+	 */
 	synchronized public void runCompleted() {
 		try {
 			Thread.sleep(2000);
@@ -75,32 +85,67 @@ public class Scheduler extends Thread {
 		notifyAll();
 	}
 
+	/**
+	 * change the current state to r
+	 * 
+	 * @param r
+	 */
 	public void setCurrentState(RequestState r) {
 		this.currentState = r;
 	}
 
+	/**
+	 * add request to the elevator queue
+	 * 
+	 * @param key,     id or order of the request to elevator
+	 * @param request, request to be added to elevator
+	 */
 	public void addEleveterRequest(Integer key, Request request) {
 		elevtorListMap.put(key, request);
 		this.setCurrentRequest(key, request);
 	}
 
+	/**
+	 * remove request from the elevator queue
+	 * 
+	 * @param key,     id or order of the request to elevator
+	 * @param request, request to be removed from elevator queue
+	 */
+
 	public void removeEleveterRequest(Integer key, Request request) {
 		elevtorListMap.remove(key);
 	}
 
+	/**
+	 * set current request to be handled
+	 * 
+	 * @param currentKey
+	 * @param currentRequest
+	 */
 	public void setCurrentRequest(Integer currentKey, Request currentRequest) {
 		this.currentRequest = currentRequest;
 		this.currentKey = currentKey;
 	}
 
+	/**
+	 * 
+	 * @return an entry of the current request
+	 */
 	public Map.Entry<Integer, Request> getCurrentRequest() {
 		return new AbstractMap.SimpleEntry<Integer, Request>(currentKey, currentRequest);
 	}
 
+	/**
+	 * 
+	 * @return boolean, true if list empty
+	 */
 	public boolean isElevatorEmpty() {
 		return elevtorListMap.isEmpty();
 	}
 
+	/**
+	 * place the system in waiting mode
+	 */
 	synchronized public void waitForRequest() {
 		while (this.isElevatorEmpty()) {
 			try {
@@ -113,6 +158,9 @@ public class Scheduler extends Thread {
 		}
 	}
 
+	/**
+	 * start the thread
+	 */
 	synchronized public void run() {
 		for (;;) {
 			while (!currentState.compare(RequestState.SCHEDULER)) {

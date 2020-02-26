@@ -3,13 +3,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
+
  * Class represents an elevator subsystem which controls the elevators
  * ElevatorSubsystem is a thread
  * @author Group #2
- *
  */
 public class ElevatorSubsystem extends Thread {
 
@@ -62,14 +61,14 @@ public class ElevatorSubsystem extends Thread {
 
 			Map.Entry<Integer, Request> entry = this.scheduler.executeRequest();
 			this.requestList.put(entry.getKey(), entry.getValue());
-	
+
 			if (!requestList.isEmpty()) {
 				elevatorState(entry);
 
 			} else {
 				System.out.println(getEleName() + "ready, waiting for requests from the Scheduler in an idle state.");
 			}
-			
+
 			System.out.println(getEleName() + ": " + entry.getValue());
 			System.out.println("----------------------------------------------------------------");
 			this.scheduler.runCompleted();
@@ -127,34 +126,32 @@ public class ElevatorSubsystem extends Thread {
 				int diff = this.currFloor - request.getStartFloor();
 				int directionIndex = 1;
 
-				if(diff > 0) {
-					directionIndex=-1;
+				if (diff > 0) {
+					directionIndex = -1;
 				}
 				diff = Math.abs(diff);
-				
+
 				if (this.currFloor == request.getStartFloor()) {
 					userDestination(request.getDestFloor());
-					
+
 					diff = this.currFloor - request.getDestFloor();
 
-					
-					if(diff > 0) {
+					if (diff > 0) {
 						directionIndex = -1;
 					}
-					
+
 					diff = Math.abs(diff);
-					
+
 				}
 
 				try {
 					triggerMotor();
 					triggerElevator(entry);
-					
+
 					while (diff != 0) {
 						Thread.sleep(ElevatorSubsystem.timeMotor);
-						
-						
-						this.currFloor+=directionIndex;
+
+						this.currFloor += directionIndex;
 
 						diff--;
 					}
@@ -162,7 +159,7 @@ public class ElevatorSubsystem extends Thread {
 					System.out.println("Error running the motor \n");
 					e.printStackTrace();
 				}
-				
+
 				state = State.ARRIVING;
 				break;
 
@@ -188,7 +185,7 @@ public class ElevatorSubsystem extends Thread {
 				}
 
 				if (this.currFloor == request.getDestFloor()) {
-					requestList.remove(entry.getKey()); 
+					requestList.remove(entry.getKey());
 					finished = true;
 					state = State.IDLE;
 				} else {
@@ -212,19 +209,19 @@ public class ElevatorSubsystem extends Thread {
 
 		if (this.currFloor == request.getStartFloor()) {
 			if (request.getDirection() == "UP") {
-				System.out.println(getEleName() + " going up to floor " + request.getDestFloor()
-						+ " to drop off passenger.");
+				System.out.println(
+						getEleName() + " going up to floor " + request.getDestFloor() + " to drop off passenger.");
 			} else {
-				System.out.println(getEleName() + " going down to floor " + request.getDestFloor()
-						+ " to drop off passenger.");
+				System.out.println(
+						getEleName() + " going down to floor " + request.getDestFloor() + " to drop off passenger.");
 			}
 		} else if (this.currFloor != request.getStartFloor()) {
 			if (this.currFloor < request.getStartFloor()) {
-				System.out.println(getEleName() + " going up to floor " + request.getStartFloor()
-						+ " to pick up passenger.");
+				System.out.println(
+						getEleName() + " going up to floor " + request.getStartFloor() + " to pick up passenger.");
 			} else {
-				System.out.println(getEleName() + " going down to floor " + request.getStartFloor()
-						+ " to pick up passenger.");
+				System.out.println(
+						getEleName() + " going down to floor " + request.getStartFloor() + " to pick up passenger.");
 			}
 		}
 	}

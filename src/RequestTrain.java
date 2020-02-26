@@ -1,4 +1,6 @@
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 //import java.sql.Time;
 //import java.time.LocalTime;
 
@@ -11,7 +13,7 @@ public class RequestTrain {
 		this.requests = new HashMap<Integer, Request>();
 	}
 
-	//add a request
+	// add a request
 	public void add(Request req) {
 
 		int key = 0;
@@ -22,31 +24,30 @@ public class RequestTrain {
 
 	}
 
-	//remove a request given a key
+	// remove a request given a key
 	public void remove(int key) {
 
 		requests.remove(key);
 
 	}
 
-	//get a request given a key
+	// get a request given a key
 	public Request getRequest(int key) {
 
 		return requests.get(key);
 
 	}
 
-	//get request with earliest time
+	// get request with earliest time
 	public Request getEarliest() {
 
 		Request earliest = null;
-	//	LocalTime check = LocalTime.MAX;  // initialize as max time
+		// LocalTime check = LocalTime.MAX; // initialize as max time
 
 		for (Request req : requests.values()) {
-			
-			
+
 			if (earliest == null) {
-				//set first request as earliest
+				// set first request as earliest
 				earliest = req;
 			} else if (earliest.getTime().isAfter(req.getTime())) {
 
@@ -59,7 +60,7 @@ public class RequestTrain {
 
 	}
 
-	//return requests that are above or below a given floor number
+	// return requests that are above or below a given floor number
 	// floor is starting position and up is boolean for direction
 	public HashMap<Integer, Request> getByFloor(int floor, boolean up) {
 
@@ -97,5 +98,9 @@ public class RequestTrain {
 
 		return rqsts;
 
+	}
+
+	public HashMap<Integer, Request> getAllRequests() {
+		return this.requests;
 	}
 }
