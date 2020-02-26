@@ -64,6 +64,7 @@ public class Request {
 
 					LocalTime time = LocalTime.parse(info[0]);
 
+
 					int fNumber = Integer.parseInt(info[1]);
 
 					String dir = info[2];

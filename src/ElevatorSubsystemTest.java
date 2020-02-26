@@ -1,8 +1,12 @@
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+
 
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertFalse;
@@ -133,6 +137,7 @@ class ElevatorSubsystemTest {
 		assertTrue(elevator.getDirectionDown());
 		// set direction to false
 		elevator.setDirectionDown(false);
+
 		// check if false
 		assertFalse(elevator.getDirectionDown());
 	}
@@ -162,6 +167,7 @@ class ElevatorSubsystemTest {
 
 	}
 
+
 	@Test
 	public void testDoorClose() {
 		// close door
@@ -175,7 +181,9 @@ class ElevatorSubsystemTest {
 	public void testDoorOpen() {
 		// open door
 		elevator.doorOpen();
+
 		// check if door open
+
 		assertFalse(elevator.getDoorClosed());
 	}
 
@@ -196,6 +204,7 @@ class ElevatorSubsystemTest {
 
 	@Test
 	public void testUserDestination() {
+
 
 		// toggle user destination at 2
 		elevator.userDestination(2);

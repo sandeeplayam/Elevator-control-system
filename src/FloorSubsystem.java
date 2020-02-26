@@ -3,41 +3,34 @@
  * @author Group #2
  *
  */
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class FloorSubsystem extends Thread {
 	private Scheduler scheduler;
-	private List<Request> requestList;
+	private HashMap<Integer, Request> requestList;
 
-	public FloorSubsystem(String name, List<Request> list, Scheduler scheduler) {
+	FloorSubsystem(String name, HashMap<Integer, Request> list, Scheduler scheduler) {
 		super(name);
 		this.scheduler = scheduler;
-		this.requestList = new ArrayList<>(list);
-	}
-
-	public void addToRequestList(Request floor) {
-		this.requestList.add(floor);
+		this.requestList = new HashMap<Integer, Request>(list);
 	}
 
 	public boolean isRequest() {
 		return requestList.isEmpty();
 	}
 
-	public void run() {
+	synchronized public void run() {
+
 		for (;;) {
 			// check if there is more requests coming in
-			try {
-				Thread.sleep(2000);
-			} catch (Exception e) {
-				System.err.println(e);
-
-			}
 			if (isRequest()) {
-				this.scheduler.setCurrentState(RequestState.SLEEP);
 				this.scheduler.waitForRequest();
 			} else {
-				this.scheduler.scheduleRequest(requestList.remove(0));
+				for (Map.Entry<Integer, Request> entry : requestList.entrySet()) {
+					this.scheduler.scheduleRequest(entry.getKey(), entry.getValue());
+				}
+				requestList.clear();
 			}
 		}
 	}

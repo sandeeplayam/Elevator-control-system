@@ -1,4 +1,6 @@
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 //import java.sql.Time;
 //import java.time.LocalTime;
 import java.util.Map.Entry;
@@ -43,6 +45,7 @@ public class RequestTrain {
 	 * 
 	 * @param key is the ID of the request to be removed
 	 */
+
 	public void remove(int key) {
 
 		requests.remove(key);
@@ -55,6 +58,7 @@ public class RequestTrain {
 	 * @param key is the ID of the request to be retrieved
 	 * @return returns the Request
 	 */
+
 	public Request getRequest(int key) {
 
 		return requests.get(key);
@@ -66,6 +70,7 @@ public class RequestTrain {
 	 * 
 	 * @return returns the earliest Request
 	 */
+
 	public Request getEarliest() {
 
 		Request earliest = null;
@@ -81,6 +86,7 @@ public class RequestTrain {
 				// if earliest's time is after current request
 			} else if (earliest.getTime().isAfter(req.getTime())) {
 				// set earliest to current request
+
 				earliest = req;
 			}
 
@@ -102,7 +108,9 @@ public class RequestTrain {
 	public HashMap<Integer, Request> getByFloor(int floor, boolean up) {
 
 		// Initialize HashMap and direction string
+
 		HashMap<Integer, Request> rqsts = new HashMap<Integer, Request>();
+
 		String dir = "";
 
 		// set string according to direction
@@ -186,4 +194,9 @@ public class RequestTrain {
 	}
 
 
+
+
+	public HashMap<Integer, Request> getAllRequests() {
+		return this.requests;
+	}
 }
