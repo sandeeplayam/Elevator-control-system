@@ -1,29 +1,30 @@
 
 /**
  * @author Group #2
+
  *
  */
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class Request {
 
-	private String time;
+	private LocalTime time;
 	private int startFloor;
 	private String direction;
 	private int destFloor;
 
-	public Request(String time, int startFloor, String direction, int destFloor) {
+	public Request(LocalTime time, int startFloor, String direction, int destFloor) {
 		this.time = time;
 		this.startFloor = startFloor;
 		this.direction = direction;
 		this.destFloor = destFloor;
 	}
 
-	public String getTime() {
+	public LocalTime getTime() {
 		return this.time;
 	}
 
@@ -49,8 +50,8 @@ public class Request {
 		File file = new File("./elevator.txt");
 		Scanner scan = new Scanner(file);
 
-		List<Request> listOfRequests = new ArrayList<Request>();
-
+		HashMap<Integer, Request> requestListMap = new HashMap<Integer, Request>();
+		int i = 0;
 		while (scan.hasNextLine()) {
 
 			String line = scan.nextLine();
@@ -61,7 +62,7 @@ public class Request {
 			if (error.strChecker() == true) {
 				if (info.length == 4) {
 
-					String time = info[0];
+					LocalTime time = LocalTime.parse(info[0]);
 
 					int fNumber = Integer.parseInt(info[1]);
 
@@ -71,7 +72,8 @@ public class Request {
 
 					int dNumber = Integer.parseInt(info[3]);
 					Request r = new Request(time, fNumber, dir, dNumber);
-					listOfRequests.add(r);
+					requestListMap.put(i, r);
+					i++;
 
 				} else {
 					System.out.print("Did not receive the correct inputs, cannot process request. \n");
@@ -82,12 +84,12 @@ public class Request {
 			}
 		}
 		scan.close();
-//		System.out.println(listOfRequests);
-		Scheduler scheduler = new Scheduler("scheduler");
-		FloorSubsystem floor = new FloorSubsystem("Floor ", listOfRequests, scheduler);
-		ElevatorSubsystem elevator = new ElevatorSubsystem("Elevator ", scheduler);
+		Scheduler scheduler = new Scheduler("Scheduler");
+		FloorSubsystem floor = new FloorSubsystem("Floor ", requestListMap, scheduler);
+		ElevatorSubsystem elevator = new ElevatorSubsystem("Elevator 1", scheduler);
 		scheduler.start();
 		floor.start();
 		elevator.start();
+
 	}
 }

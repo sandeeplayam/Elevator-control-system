@@ -20,7 +20,7 @@ public class EventErrorHandler {
 
 	public boolean checkTime() {
 		String time = this.str[0];
-		if (time.length() != 10 || time.charAt(2) != ':' || time.charAt(5) != ':' || time.charAt(8) != '.') {
+		if (time.length() != 12 || time.charAt(2) != ':' || time.charAt(5) != ':' || time.charAt(8) != '.') {
 			System.out.println("The time is not in the correct format, cannot process request. \n");
 			return true;
 		}
