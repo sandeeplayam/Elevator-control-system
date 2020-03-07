@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Scheduler extends Thread {
-	private RequestState currentState = RequestState.SCHEDULER;
+	private SchedulerStates currentState = SchedulerStates.SCHEDULER;
 	private HashMap<Integer, Request> requestListMap;
 	private HashMap<Integer, Request> elevtorListMap;
 	private int currentKey;
@@ -28,13 +28,14 @@ public class Scheduler extends Thread {
 	 */
 
 	synchronized public void scheduleRequest(Integer key, Request request) {
-		while (!currentState.compare(RequestState.FLOOR_REQUEST)) {
+		while (!currentState.compare(SchedulerStates.FLOOR_REQUEST)) {
 			try {
 				wait();
 			} catch (Exception e) {
 				System.err.println(e);
 			}
 		}
+		System.out.println( "-------------Scheduler processing request state-------------\n");
 		String fThread = Thread.currentThread().getName();
 		System.out.println(fThread + " sending a request with details of---> " + request);
 		try {
@@ -45,9 +46,20 @@ public class Scheduler extends Thread {
 		}
 		requestListMap.put(key, request);
 		int f = request.getDestFloor();
-		System.out.println("Scheduler recieved a request to : " + f);
+		System.out.println("-------------Scheduler received a request to floor: " + f +"  ------------- ");
+		
+		
+		
 		this.addEleveterRequest(key, request);
-		currentState = RequestState.ELEVATOR_REQUEST;
+		
+		try {
+			Thread.sleep(2000);
+		} catch (Exception e) {
+			System.err.println(e);
+
+		}
+		
+		currentState = SchedulerStates.ELEVATOR_REQUEST;
 		notifyAll();
 	}
 
@@ -56,14 +68,14 @@ public class Scheduler extends Thread {
 	 * @return an entry of the request handled
 	 */
 	synchronized public Map.Entry<Integer, Request> executeRequest() {
-		while (!currentState.compare(RequestState.ELEVATOR_REQUEST)) {
+		while (!currentState.compare(SchedulerStates.ELEVATOR_REQUEST)) {
 			try {
 				wait();
 			} catch (Exception e) {
 				System.err.println(e);
 			}
 		}
-		currentState = RequestState.ElevatorRunning;
+		currentState = SchedulerStates.ElevatorRunning;
 		notifyAll();
 		requestListMap.remove(currentKey);
 		return new AbstractMap.SimpleEntry<Integer, Request>(currentKey, currentRequest);
@@ -80,7 +92,8 @@ public class Scheduler extends Thread {
 			System.err.println(e);
 
 		}
-		this.setCurrentState(RequestState.FLOOR_REQUEST);
+		System.out.println("-------------Scheduler Handling Floor Request State-------------\n");
+		this.setCurrentState(SchedulerStates.FLOOR_REQUEST);
 		removeEleveterRequest(currentKey, currentRequest);
 		notifyAll();
 	}
@@ -90,7 +103,7 @@ public class Scheduler extends Thread {
 	 * 
 	 * @param r
 	 */
-	public void setCurrentState(RequestState r) {
+	public void setCurrentState(SchedulerStates r) {
 		this.currentState = r;
 	}
 
@@ -149,8 +162,9 @@ public class Scheduler extends Thread {
 	synchronized public void waitForRequest() {
 		while (this.isElevatorEmpty()) {
 			try {
-				System.out.println("*********waiting for request...*********");
-				this.setCurrentState(RequestState.SLEEP);
+				System.out.println("-------------Scheduler sleep state-------------\n");
+				System.out.println("********...waiting for request...********");
+				this.setCurrentState(SchedulerStates.SLEEP);
 				wait();
 			} catch (Exception e) {
 				System.err.println(e);
@@ -163,15 +177,21 @@ public class Scheduler extends Thread {
 	 */
 	synchronized public void run() {
 		for (;;) {
-			while (!currentState.compare(RequestState.SCHEDULER)) {
+			while (!currentState.compare(SchedulerStates.SCHEDULER)) {
 				try {
 					wait();
 				} catch (Exception e) {
 					System.err.println(e);
 				}
 			}
-			currentState = RequestState.FLOOR_REQUEST;
+			currentState = SchedulerStates.FLOOR_REQUEST;
+			System.out.println("-------------Scheduler floor request state-------------");
 			notifyAll();
 		}
+	}
+
+	public SchedulerStates getCurrentState() {
+		// TODO Auto-generated method stub
+		return this.currentState;
 	}
 }
