@@ -54,7 +54,7 @@ public class FloorSubsystemUdp extends Thread {
 			sendReceiveSocket.close();
 
 			// get the response of the server(scheduler)
-			// this.floorReceive();
+			this.floorReceive();
 
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
@@ -72,27 +72,37 @@ public class FloorSubsystemUdp extends Thread {
 	 * wait for the server(scheduler) to respond with a message
 	 */
 	public void floorReceive() {
-		// start the socket again
-		this.initializeSocket();
-		byte data[] = new byte[100];
-		this.receivePacket = new DatagramPacket(data, data.length);
 
 		try {
-			// Block until a datagram is received via sendReceiveSocket.
-			sendReceiveSocket.receive(this.receivePacket);
 
+			// Initialize socket and listen to port 3000
+			this.sendReceiveSocket = new DatagramSocket(3003);
+
+			// Construct a DatagramPacket for receiving packets up
+			// to 100 bytes long
+			byte data[] = new byte[100];
+			receivePacket = new DatagramPacket(data, data.length);
+
+			sendReceiveSocket.receive(receivePacket);
 			// Process the received datagram.
-			System.out.println("Client: Packet received:");
-			int len = this.receivePacket.getLength();
+			System.out.print("Packet received contaning:\t");
+			int len = receivePacket.getLength();
+
 			// Form a String from the byte array.
 			String received = new String(data, 0, len);
-
-			System.out.print("Containing: ");
 			System.out.println(received);
 
-			// close the socket .
+			// We're finished, so close the sockets.
 			sendReceiveSocket.close();
+
+			// send the received packet to floor
+			this.floorSend();
+		} catch (SocketException se) { // Can't create the socket.
+			se.printStackTrace();
+			System.exit(1);
 		} catch (IOException e) {
+			System.out.print("IO Exception: likely:");
+			System.out.println("Receive Socket Timed Out.\n" + e);
 			e.printStackTrace();
 			System.exit(1);
 		}

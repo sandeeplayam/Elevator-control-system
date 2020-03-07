@@ -27,8 +27,8 @@ public class ElevatorSubsystemUdp extends Thread {
 			byte data[] = new byte[100];
 			receivePacket = new DatagramPacket(data, data.length);
 			System.out.println("Elevator: Waiting for request.");
-
 			receiveSocket.receive(receivePacket);
+			Thread.sleep(2000);
 			// Process the received datagram.
 			int len = receivePacket.getLength();
 
@@ -39,6 +39,8 @@ public class ElevatorSubsystemUdp extends Thread {
 
 			// We're finished, so close the sockets.
 			receiveSocket.close();
+
+			this.sendRequestToScheduler(data);
 		} catch (SocketException se) { // Can't create the socket.
 			se.printStackTrace();
 			System.exit(1);
@@ -47,6 +49,9 @@ public class ElevatorSubsystemUdp extends Thread {
 			System.out.println("Receive Socket Timed Out.		" + e);
 			e.printStackTrace();
 			System.exit(1);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
@@ -55,20 +60,22 @@ public class ElevatorSubsystemUdp extends Thread {
 		try {
 			// initialize the socket and packet from the received data
 			this.sendSocket = new DatagramSocket();
-			sendPacket = new DatagramPacket(data, receivePacket.getLength(), receivePacket.getAddress(),
-					receivePacket.getPort());
+
+			data[data.length - 3] = '2';
+
+			sendPacket = new DatagramPacket(data, 100, receivePacket.getAddress(), 3002);
 			System.out.print("Containing: ");
 			System.out.println(new String(sendPacket.getData(), 0, sendPacket.getLength()));
+			Thread.sleep(2000);
 			sendSocket.send(sendPacket);
 
 			// Slow things down (wait 2 seconds)
-			Thread.sleep(2000);
 
 			System.out.println("Server: packet sent");
 
 			// We're finished, so close the sockets.
-			receiveSocket.close();
 			sendSocket.close();
+			this.receiveSchedulerRequest();
 
 		} catch (IOException e) {
 			e.printStackTrace();
