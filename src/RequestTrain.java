@@ -18,9 +18,6 @@ public class RequestTrain {
 		this.requests = new HashMap<Integer, Request>();
 	}
 
-	public HashMap<Integer, Request> getAllRequests() {
-		return this.requests;
-	}
 
 	/**
 	 * Adds a request to existing map of requests

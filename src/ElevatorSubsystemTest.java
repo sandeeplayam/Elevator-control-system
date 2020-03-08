@@ -3,16 +3,11 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
-
-import static org.junit.Assert.*;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 
 import org.junit.jupiter.api.Test;
 
@@ -20,11 +15,10 @@ class ElevatorSubsystemTest {
 
 	// Initialize elevator and scheduler
 	private ElevatorSubsystem elevator;
-	Scheduler sched = new Scheduler("name");
 
-	public ElevatorSubsystemTest() {
+	public ElevatorSubsystemTest() throws UnknownHostException {
 		// create a new elevator
-		elevator = new ElevatorSubsystem("One", sched);
+		elevator = new ElevatorSubsystem("Elevator 1", "172");
 	}
 
 	@Test
@@ -34,9 +28,7 @@ class ElevatorSubsystemTest {
 		// elevator exists
 		assertFalse(elevator == null);
 		// name is "One"
-		assertEquals(elevator.getEleName(), "One");
-		// elevator has same scheduler
-		assertEquals(elevator.getScheduler(), sched);
+		assertEquals(elevator.getEleName(), "Elevator 1");
 		// initial floor is 1
 		assertEquals(elevator.getCurrFloor(), 1);
 		// door is initially closed
