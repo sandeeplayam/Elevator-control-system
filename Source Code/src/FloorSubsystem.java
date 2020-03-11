@@ -40,7 +40,6 @@ public class FloorSubsystem extends Thread {
 
 	public void floorSend() throws FileNotFoundException {
 		
-		this.requested();
 		
 			
 		if(AL.size()>=1) {
@@ -50,6 +49,7 @@ public class FloorSubsystem extends Thread {
 			this.initializeSocket();
 			
 			String s = AL.remove(0);
+			
 			
 			System.out.println("Client: sending a packet containing: " + s);
 
@@ -134,7 +134,7 @@ public class FloorSubsystem extends Thread {
 
 	}
 	
-public void requested() throws FileNotFoundException {
+	public void requested() throws FileNotFoundException {
 		
 		File file = new File("./elevator.txt");
 		Scanner scan = new Scanner(file);
@@ -181,17 +181,28 @@ public void requested() throws FileNotFoundException {
 	}
 
 	public void run() {
+		
+		try {
+			this.requested();
+		} catch (FileNotFoundException e2) {
+			e2.printStackTrace();
+		}
+
+		try {
+			Thread.sleep(6500);
+		} catch (InterruptedException e1) {
+			e1.printStackTrace();
+		}
 		try {
 			this.floorSend();
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
 	public static void main(String[] args) throws UnknownHostException {
 
-		FloorSubsystem fl = new FloorSubsystem("172.17.179.74");
+		FloorSubsystem fl = new FloorSubsystem("172.17.168.190");
 		fl.start();
 	}
 

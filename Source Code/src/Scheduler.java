@@ -98,7 +98,6 @@ public class Scheduler extends Thread {
 
 			}
 			
-			System.out.println(splitStr);
 			//set current floor of elevator
 			this.setCurrFloor(Integer.parseInt(splitStr[5]), Integer.parseInt(splitStr[6]));
 			
